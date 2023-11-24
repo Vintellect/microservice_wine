@@ -42,4 +42,32 @@ def getWineById():
         cursor = snapshot.execute_sql(SQL_SELECT_WINE_WHERE(f"WHERE w.id = {int(wine_id)}"))
     return jsonify(list(cursor))
 
+###########
+# By years
+###########
+@app.route("/getWine/year/before", methods=['POST'])
+def getWineBefore():
+    year = request.args.get('year')
+    database = spanner_client.instance(instance_id).database(database_id)
+    with database.snapshot() as snapshot:
+        cursor = snapshot.execute_sql(SQL_SELECT_WINE_WHERE(f"WHERE w.years < {int(year)}"))
+    return jsonify(list(cursor))
+
+@app.route("/getWine/year/after", methods=['POST'])
+def getWineAfter():
+    year = request.args.get('year')
+    database = spanner_client.instance(instance_id).database(database_id)
+    with database.snapshot() as snapshot:
+        cursor = snapshot.execute_sql(SQL_SELECT_WINE_WHERE(f"WHERE w.years > {int(year)}"))
+    return jsonify(list(cursor))
+
+@app.route("/getWine/year", methods=['POST'])
+def getWineByYear():
+    year = request.args.get('year')
+    database = spanner_client.instance(instance_id).database(database_id)
+    with database.snapshot() as snapshot:
+        cursor = snapshot.execute_sql(SQL_SELECT_WINE_WHERE(f"WHERE w.years = {int(year)}"))
+    return jsonify(list(cursor))
+
+
 # [END app]
