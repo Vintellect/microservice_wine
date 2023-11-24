@@ -34,6 +34,12 @@ def getAllWine():
         cursor = snapshot.execute_sql(SQL_SELECT_WINE())
     return jsonify(list(cursor))
 
-
+@app.route("/getWine/id", methods=['POST'])
+def getWineById():
+    wine_id = request.args.get('id')
+    database = spanner_client.instance(instance_id).database(database_id)
+    with database.snapshot() as snapshot:
+        cursor = snapshot.execute_sql(SQL_SELECT_WINE_WHERE(f"WHERE w.id = {int(wine_id)}"))
+    return jsonify(list(cursor))
 
 # [END app]
