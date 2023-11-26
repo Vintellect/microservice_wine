@@ -23,7 +23,7 @@ def SQL_SELECT_WINE():
     return SQL_SELECT_WINE_WHERE("")
 
 def SQL_SELECT_WINE_WHERE(where):
-    return f"SELECT w.years, w.code_barre, w.percent, a.advice, app.appellation, r.region, t.type, wa.warning, c.cuve, p.productor FROM wine w LEFT JOIN advice a ON w.id_advice = a.id LEFT JOIN appellation app ON w.id_appellation = app.id LEFT JOIN region r ON w.id_region = r.id LEFT JOIN type t ON w.id_type = t.id LEFT JOIN warning wa ON w.id_warning = wa.id LEFT JOIN cuve c ON w.id_cuve = c.id LEFT JOIN productor p ON w.id_productor = p.id {where};"
+    return f"SELECT w.years, w.code_barre, w.percent, a.advice, app.appellation, r.region, t.type, wa.warning, c.cuve, p.productor, w.img_url, STRING_AGG(cep.cepage, ', ') AS cepage FROM wine w LEFT JOIN advice a ON w.id_advice = a.id LEFT JOIN appellation app ON w.id_appellation = app.id LEFT JOIN region r ON w.id_region = r.id LEFT JOIN type t ON w.id_type = t.id LEFT JOIN warning wa ON w.id_warning = wa.id LEFT JOIN cuve c ON w.id_cuve = c.id LEFT JOIN productor p ON w.id_productor = p.id LEFT JOIN cepage_join cj ON w.id = cj.id_wine LEFT JOIN cepage cep ON cj.id_cepage = cep.id {where} GROUP BY w.id, w.years, w.code_barre, w.percent, a.advice, app.appellation, r.region, t.type, wa.warning, c.cuve, p.productor, w.img_url;"
 
 
 
@@ -42,9 +42,7 @@ def getWineById():
         cursor = snapshot.execute_sql(SQL_SELECT_WINE_WHERE(f"WHERE w.id = {int(wine_id)}"))
     return jsonify(list(cursor))
 
-###########
-# By years
-###########
+# [START by years]
 @app.route("/getWine/year/before", methods=['POST'])
 def getWineBefore():
     year = request.args.get('year')
@@ -68,6 +66,9 @@ def getWineByYear():
     with database.snapshot() as snapshot:
         cursor = snapshot.execute_sql(SQL_SELECT_WINE_WHERE(f"WHERE w.years = {int(year)}"))
     return jsonify(list(cursor))
+# [END by years]
+
+
 
 
 # [END app]
