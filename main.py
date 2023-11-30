@@ -69,6 +69,12 @@ def getWineByYear():
 # [END by years]
 
 
-
+@app.route("/getWine/codebare", methods=['POST'])
+def getWineByCodeBar():
+    codebare = request.args.get('codebarre')
+    database = spanner_client.instance(instance_id).database(database_id)
+    with database.snapshot() as snapshot:
+        cursor = snapshot.execute_sql(SQL_SELECT_WINE_WHERE(f"WHERE w.code_barre = '{str(codebare)}'"))
+    return jsonify(list(cursor))
 
 # [END app]
