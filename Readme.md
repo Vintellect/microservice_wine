@@ -1,10 +1,10 @@
-# User Management
+# Wine Information
 
-This service is responsible for handling user-related operations within our infrastructure. It provides functionality for user registration, authentication, and user profile management.
+The Wine Information service is dedicated to ensuring the accessibility of wine data within our system. This service is the key to providing comprehensive wine-related information to our users.
 
 ## Deployment Instructions
 
-To deploy the User Management service, start by copying the example application configuration:
+To deploy the wine  service, start by copying the example application configuration:
 
 ```sh
 cp example.app.yml app.yml
