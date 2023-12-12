@@ -14,7 +14,6 @@ app = Flask(__name__)
 
 # [START create_spanner]
 spanner_client = spanner.Client()
-instance_id = os.getenv("USER_MICROSERVICES")
 instance_id = os.getenv("SPANNER_INSTANCE")
 database_id = os.getenv("SPANNER_DATABASE")
 # [END create_spanner]
@@ -75,6 +74,14 @@ def getWineByCodeBar():
     database = spanner_client.instance(instance_id).database(database_id)
     with database.snapshot() as snapshot:
         cursor = snapshot.execute_sql(SQL_SELECT_WINE_WHERE(f"WHERE w.code_barre = '{str(codebare)}'"))
+    return jsonify(list(cursor))
+
+@app.route("/like/<table>")
+def getWineLike(table):
+    value = request.args.get('value')
+    database = spanner_client.instance(instance_id).database(database_id)
+    with database.snapshot() as snapshot:
+        cursor = snapshot.execute_sql(f"SELECT * FROM {table} as t WHERE t.{table} like '%{value}%'")
     return jsonify(list(cursor))
 
 # [END app]
